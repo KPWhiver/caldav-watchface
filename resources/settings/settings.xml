@@ -1,0 +1,31 @@
+<settings>
+    <setting propertyKey="@Properties.RetrievalServiceUrl" title="Retrieval service URL">
+        <settingConfig type="url"/>
+    </setting>
+    <setting propertyKey="@Properties.CaldavUrl" title="Caldav URL">
+        <settingConfig type="url"/>
+    </setting>
+    <setting propertyKey="@Properties.DayCalendars" title="Day calendar list">
+        <settingConfig type="alphaNumeric"/>
+    </setting>
+    <setting propertyKey="@Properties.WeekCalendars" title="Week calendar list">
+        <settingConfig type="alphaNumeric"/>
+    </setting>
+    <setting propertyKey="@Properties.YearCalendars" title="Year calendar list">
+        <settingConfig type="alphaNumeric"/>
+    </setting>
+    <!--setting propertyKey="@Properties.Calendars" title="Calendars" maxLength="10">
+        <setting title="Calendar name" type="string">
+            <settingConfig id="name" type="alphaNumeric"/>
+        </setting>
+        <setting title="Day events" type="boolean">
+            <settingConfig id="dayEvents" type="boolean"/>
+        </setting>
+        <setting title="Week events" type="boolean">
+            <settingConfig id="weekEvents" type="boolean"/>
+        </setting>
+        <setting title="Year events" type="boolean">
+            <settingConfig id="yearEvents" type="boolean"/>
+        </setting>
+    </setting-->
+</settings>

@@ -1,0 +1,8 @@
+<properties>
+    <property id="RetrievalServiceUrl" type="string"/>
+    <property id="CaldavUrl" type="string"/>
+    <!--property id="Calendars" type="array"/-->
+    <property id="DayCalendars" type="string"/m
+    <property id="WeekCalendars" type="string"/>
+    <property id="YearCalendars" type="string"/>
+</properties>

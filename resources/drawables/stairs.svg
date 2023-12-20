@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="130.048mm"
+   height="130.048mm"
+   viewBox="0 0 130.048 130.048"
+   version="1.1"
+   id="svg240"
+   inkscape:export-filename="stairs.png"
+   inkscape:export-xdpi="9.765625"
+   inkscape:export-ydpi="9.765625"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="stairs.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview242"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.1893044"
+     inkscape:cx="243.4196"
+     inkscape:cy="180.35753"
+     inkscape:window-width="943"
+     inkscape:window-height="1219"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs237">  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-35.653967,-57.048035)">
+    <g
+       id="SVGRepo_bgCarrier"
+       stroke-width="0"
+       transform="matrix(0.26458333,0,0,0.26458333,35.653967,57.048035)" />
+    <g
+       id="SVGRepo_tracerCarrier"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       transform="matrix(0.26458333,0,0,0.26458333,35.653967,57.048035)" />
+    <g
+       id="g371"
+       transform="matrix(0.26458333,0,0,0.26458333,35.674824,52.05378)"
+       style="image-rendering:auto"> <g
+   id="g369"> <g
+   id="g367"> <path
+   d="m 471.04,40.96 h -102.4 -40.96 c -11.305,0 -20.48,9.155 -20.48,20.48 0,11.325 9.175,20.48 20.48,20.48 h 20.48 v 61.44 h -81.92 -40.96 c -11.305,0 -20.48,9.155 -20.48,20.48 0,11.325 9.175,20.48 20.48,20.48 h 20.48 v 61.44 h -81.92 -40.96 c -11.305,0 -20.48,9.155 -20.48,20.48 0,11.325 9.175,20.48 20.48,20.48 h 20.48 v 61.44 H 61.44 20.48 C 9.175,348.16 0,357.315 0,368.64 c 0,11.325 9.175,20.48 20.48,20.48 h 20.48 v 81.92 c 0,11.325 9.175,20.48 20.48,20.48 h 409.6 c 11.325,0 20.48,-9.155 20.48,-20.48 V 61.44 c 0,-11.325 -9.155,-20.48 -20.48,-20.48 z"
+   id="path3342" />
+  </g>
+ </g>
+ </g>
+  </g>
+</svg>

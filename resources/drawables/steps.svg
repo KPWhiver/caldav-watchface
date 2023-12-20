@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="169.33333mm"
+   height="169.33299mm"
+   viewBox="0 0 169.33333 169.33299"
+   version="1.1"
+   id="svg3909"
+   inkscape:export-filename="steps.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="steps.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview3911"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.1893044"
+     inkscape:cx="310.2654"
+     inkscape:cy="377.95202"
+     inkscape:window-width="1898"
+     inkscape:window-height="1219"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs3906" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-19.737565,-75.486858)">
+    <g
+       id="SVGRepo_bgCarrier"
+       stroke-width="0"
+       transform="matrix(0.26458333,0,0,0.26458333,19.681948,91.602193)" />
+    <g
+       id="SVGRepo_tracerCarrier"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       transform="matrix(0.26458333,0,0,0.26458333,19.681948,91.602193)" />
+    <g
+       id="SVGRepo_iconCarrier"
+       transform="matrix(0.26458333,0,0,0.26458333,19.681948,91.602193)">
+      <path
+         d="m 192,160 h 32 V 32 h -32 c -35.35,0 -64,28.65 -64,64 0,35.35 28.65,64 64,64 z M 0,416 c 0,35.35 28.65,64 64,64 H 96 V 352 H 64 C 28.65,352 0,380.65 0,416 Z M 337.46,288 c -34.91,0 -76.16,13.12 -104.73,32 -24.79,16.38 -44.52,32 -104.73,32 v 128 l 57.53,15.97 c 26.21,7.28 53.01,13.12 80.31,15.05 32.69,2.31 65.6,0.67 97.58,-6.2 C 472.9,481.3 512,429.22 512,384 512,320 427.82,288 337.46,288 Z M 491.42,7.19 c -31.98,-6.87 -64.89,-8.52 -97.58,-6.2 -27.3,1.93 -54.1,7.77 -80.31,15.04 L 256,32 v 128 c 60.2,0 79.94,15.62 104.73,32 28.57,18.88 69.82,32 104.73,32 C 555.82,224 640,192 640,128 640,82.78 600.9,30.7 491.42,7.19 Z"
+         id="path4032" />
+    </g>
+  </g>
+</svg>
