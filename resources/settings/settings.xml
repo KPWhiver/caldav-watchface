@@ -14,6 +14,12 @@
     <setting propertyKey="@Properties.YearCalendars" title="Year calendar list">
         <settingConfig type="alphaNumeric"/>
     </setting>
+    <setting propertyKey="@Properties.HomeLatitude" title="Home latitude">
+        <settingConfig type="numeric"/>
+    </setting>
+    <setting propertyKey="@Properties.HomeLongitude" title="Home longitude">
+        <settingConfig type="numeric"/>
+    </setting>
     <!--setting propertyKey="@Properties.Calendars" title="Calendars" maxLength="10">
         <setting title="Calendar name" type="string">
             <settingConfig id="name" type="alphaNumeric"/>

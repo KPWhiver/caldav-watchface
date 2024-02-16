@@ -5,4 +5,6 @@
     <property id="DayCalendars" type="string"/>
     <property id="WeekCalendars" type="string"/>
     <property id="YearCalendars" type="string"/>
+    <property id="HomeLatitude" type="float"/>
+    <property id="HomeLongitude" type="float"/>
 </properties>

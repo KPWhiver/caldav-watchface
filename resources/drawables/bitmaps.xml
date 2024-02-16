@@ -23,7 +23,12 @@
             <color>AAAAAA</color>
         </palette>
     </bitmap>
-    <bitmap id="Calories" filename="calories.png" scaleX="7%" scaleRelativeTo="screen">
+    <bitmap id="Calories" filename="minutes.png" scaleY="7%" scaleRelativeTo="screen">
+        <palette>
+            <color>AAAAAA</color>
+        </palette>
+    </bitmap>
+    <bitmap id="House" filename="house.png" scaleX="12%" scaleRelativeTo="screen">
         <palette>
             <color>AAAAAA</color>
         </palette>
