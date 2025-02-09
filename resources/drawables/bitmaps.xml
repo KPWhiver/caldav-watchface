@@ -1,7 +1,6 @@
 <resources>
     <bitmap id="LauncherIcon" filename="launcher_icon.png"/>
     <bitmap id="YearWheel" scaleX="100%" scaleRelativeTo="screen" filename="yearwheel.png"/>
-    <bitmap id="Rings" scaleX="100%" scaleRelativeTo="screen" filename="rings.png"/>
     <bitmap id="AlphaWheel" scaleX="30%" scaleRelativeTo="screen" filename="alphawheel.png">
         <palette>
             <color>000000</color>
@@ -30,7 +29,7 @@
     </bitmap>
     <bitmap id="House" filename="house.png" scaleX="12%" scaleRelativeTo="screen">
         <palette>
-            <color>AAAAAA</color>
+            <color>666666</color>
         </palette>
     </bitmap>
     <bitmap id="Bluetooth" filename="bluetooth.png" scaleX="5%" scaleRelativeTo="screen">

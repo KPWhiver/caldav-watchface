@@ -16,7 +16,6 @@ class CaldavWatchView extends WatchUi.WatchFace {
 
     // bitmaps
     var yearWheel;
-    var rings;
     var alphaWheel;
     var heartIcon;
     var stepsIcon;
@@ -65,9 +64,10 @@ class CaldavWatchView extends WatchUi.WatchFace {
 
     const screenRadius = System.getDeviceSettings().screenWidth / 2;
     const onePercentWidth = self.screenRadius * 2 / 100.0;
-    const ringWidth = 10 * self.onePercentWidth;
+    const ringWidth = 5 * self.onePercentWidth;
     const yearRingRadius = self.screenRadius - self.ringWidth * 0.5;
-    const eventRingRadius = self.screenRadius - self.ringWidth * 1.5;
+    const weekRingRadius = self.yearRingRadius - self.ringWidth * 1 - 2;
+    const eventRingRadius = self.weekRingRadius - self.ringWidth * 1.5 - 2;
 
     function initialize() {
         WatchFace.initialize();
@@ -94,19 +94,14 @@ class CaldavWatchView extends WatchUi.WatchFace {
         }
     }
 
-    // Load your resources here
     function onLayout(dc as Graphics.Dc) as Void {
         setLayout(Rez.Layouts.WatchFace(dc));
     }
 
-    // Called when this View is brought to the foreground. Restore
-    // the state of this View and prepare it to be shown. This includes
-    // loading resources into memory.
     function onShow() as Void {
         self.lastRenderedMinute = null;
 
         self.yearWheel = WatchUi.loadResource(Rez.Drawables.YearWheel);
-        self.rings = WatchUi.loadResource(Rez.Drawables.Rings);
         self.alphaWheel = WatchUi.loadResource(Rez.Drawables.AlphaWheel);
         self.heartIcon = WatchUi.loadResource(Rez.Drawables.Heart);
         self.stepsIcon = WatchUi.loadResource(Rez.Drawables.Steps);
@@ -252,7 +247,7 @@ class CaldavWatchView extends WatchUi.WatchFace {
         }
 
         // draw lines
-        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
         dc.setPenWidth(1);
         if (renderStart) {
             drawRadialLine(dc, innerRadius + 1, outerRadius - 1, startAngle / 180 * Math.PI);
@@ -286,8 +281,6 @@ class CaldavWatchView extends WatchUi.WatchFace {
         // Draw events
         var arcsToRender = [];
 
-        var allDayEventCount = 0;
-        var lastAllDayCalendarIndex = -1;
         var timeEvents = self.dayEvents.get("timeEvents") as Lang.Array;
 
         for (var eventIdx = 0; eventIdx < timeEvents.size(); eventIdx++) {
@@ -308,7 +301,7 @@ class CaldavWatchView extends WatchUi.WatchFace {
                 level = 4;
             }
             arcRadius = radius - level * 1 * onePercentWidth;
-            arcThickness = self.ringWidth - level * 2 * onePercentWidth;
+            arcThickness = self.ringWidth * 2.0 - level * 2 * onePercentWidth;
 
             var renderEnd = endTime != maxUnix;
             if (startAngle - minAngle > 300) {
@@ -400,18 +393,18 @@ class CaldavWatchView extends WatchUi.WatchFace {
             minute = "0" + minute;
         }
 
-        drawText(dc, self.screenRadius, self.screenRadius - onePercentWidth*21,
+        drawText(dc, self.screenRadius, self.screenRadius - onePercentWidth*22,
                  Graphics.FONT_XTINY, timeToString(eventGregorian.hour) + ":" + timeToString(eventGregorian.min));
-        drawText(dc, self.screenRadius, self.screenRadius - onePercentWidth*14.5,
+        drawText(dc, self.screenRadius, self.screenRadius - onePercentWidth*16,
                  Graphics.FONT_XTINY, summary);
-        //if (event["location"] != null) {
-        //    var location = event["location"];
-        //    if (location.length() > 15) {
-        //        location = location.substring(0, 14) + "..";
-        //    }
-        //    drawText(dc, self.screenRadius, self.screenRadius - onePercentWidth*10,
-        //             Graphics.FONT_XTINY, location);
-        //}
+        if (event["location"] != null) {
+            var location = event["location"];
+            if (location.length() > 15) {
+                location = location.substring(0, 14) + "..";
+            }
+            drawText(dc, self.screenRadius, self.screenRadius - onePercentWidth*10,
+                     Graphics.FONT_XTINY, location);
+        }
     }
 
     function dateToAngle(date as Time.Gregorian.Info) as Lang.Float {
@@ -428,7 +421,9 @@ class CaldavWatchView extends WatchUi.WatchFace {
         });
     }
 
-    function drawYearRing(dc as Graphics.Dc, now as Time.Gregorian.Info) as Void {
+    function drawYearRing(dc as Graphics.Dc, radius as Lang.Numeric, now as Time.Gregorian.Info) as Void {
+        var yearRingWidth = self.ringWidth;
+
         var lastAllDayCalendarIndex = -1;
         var allDayColors = [];
         var dateEvents = self.dayEvents.get("dateEvents") as Lang.Array;
@@ -454,14 +449,17 @@ class CaldavWatchView extends WatchUi.WatchFace {
 
         // Draw year ring
         dc.drawBitmap(0, 0, self.yearWheel);
+        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_TRANSPARENT);
+        dc.setPenWidth(yearRingWidth);
+        dc.drawCircle(self.screenRadius, self.screenRadius, self.screenRadius - yearRingWidth * 1.5);
 
         // draw month day
         var todayAngle = dateToAngle(now);
 
-        var xValue = self.screenRadius - yearRingRadius * Math.sin(todayAngle);
-        var yValue = self.screenRadius - yearRingRadius * Math.cos(todayAngle);
+        var xValue = self.screenRadius - radius * Math.sin(todayAngle);
+        var yValue = self.screenRadius - radius * Math.cos(todayAngle);
 
-        var arcRadius = Math.round(self.ringWidth * 0.22);
+        var arcRadius = Math.round(yearRingWidth * 0.4);
         var arcThickness = arcRadius * 2;
         dc.setPenWidth(Math.round(arcThickness));
         var arcAngle = Math.round(360 / allDayColors.size());
@@ -480,21 +478,12 @@ class CaldavWatchView extends WatchUi.WatchFace {
 
             dc.setPenWidth(2);
             dc.setColor(event["color"], Graphics.COLOR_TRANSPARENT);
-            drawRadialLine(dc, self.screenRadius - self.ringWidth * 0.5, self.screenRadius, -eventAngle);
+            drawRadialLine(dc, self.screenRadius - yearRingWidth, self.screenRadius, -eventAngle);
         }
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        drawText(dc, xValue, yValue, Graphics.FONT_TINY, timeToString(now.day));
-    }
+        drawText(dc, xValue, yValue, Graphics.FONT_XTINY, timeToString(now.day));
 
-    function weekUnixTimeToAngle(unix as Lang.Number, wakeTime as Lang.Number, awakeDuration as Lang.Number, now as Time.Gregorian.Info) as Lang.Float {
-        var moment = new Time.Moment(unix);
-        var gregorian = Time.Gregorian.info(moment, Time.FORMAT_SHORT);
-        var day = (gregorian.day_of_week - now.day_of_week + 7) % 7;
-        var seconds = ((gregorian.hour * 60 + gregorian.min) * 60) + gregorian.sec;
-        var secondsAwake = clamp(seconds - wakeTime, 0, awakeDuration);
-
-        return (day - 1) * 30 + (secondsAwake.toFloat() / awakeDuration) * 30;
     }
 
     function startOfDay(unix as Lang.Number) as Lang.Number {
@@ -507,6 +496,16 @@ class CaldavWatchView extends WatchUi.WatchFace {
             :minute => 0,
             :second => 0
         }).value();
+    }
+
+    function weekUnixTimeToAngle(unix as Lang.Number, wakeTime as Lang.Number, awakeDuration as Lang.Number, now as Time.Gregorian.Info, todayUnix as Lang.Number) as Lang.Float {
+        var dayStartUnix = startOfDay(unix);
+        var daysUntil = Math.round((dayStartUnix - todayUnix) / Time.Gregorian.SECONDS_PER_DAY.toFloat());
+
+        var secondsSinceDayStart = unix - dayStartUnix;
+        var secondsAwake = clamp(secondsSinceDayStart - wakeTime, 0, awakeDuration);
+
+        return (daysUntil - 1) * 30 + (secondsAwake.toFloat() / awakeDuration) * 30;
     }
 
     function julianDay(year, month, day) {
@@ -554,15 +553,27 @@ class CaldavWatchView extends WatchUi.WatchFace {
         }
     }
 
-    function drawWeekEvents(dc as Graphics.Dc, now as Time.Gregorian.Info) as Void {
-        var weekNumber = isoWeekNumber(now.day, now.month, now.year);
-        var nextWeekNumber = weekNumber + 1;
-        if (now.month == 12 && now.day > 31 - 7) {
+    function nextWeekNumber(weekNumber as Lang.Number, now as Time.Gregorian.Info) {
+        if (weekNumber == 53) {
+            return 1;
+        }
+
+        if (weekNumber == 52) {
             var lastWeekNumber = isoWeekNumber(31, 12, now.year);
-            if (weekNumber == lastWeekNumber) {
-                nextWeekNumber = 1;
+            if (lastWeekNumber == weekNumber) {
+                return 1;
             }
         }
+
+        return weekNumber + 1;
+    }
+
+    function drawWeekRing(dc as Graphics.Dc, radius as Lang.Numeric, now as Time.Gregorian.Info) as Void {
+        var weekRingWidth = self.ringWidth;
+
+        var weekNumber = isoWeekNumber(now.day, now.month, now.year);
+        var weekNumberPlusOne = nextWeekNumber(weekNumber, now);
+        var weekNumberPlusTwo = nextWeekNumber(weekNumberPlusOne, now);
 
         var weekTimeEvents = self.weekEvents.get("timeEvents") as Lang.Array;
 
@@ -573,48 +584,112 @@ class CaldavWatchView extends WatchUi.WatchFace {
 
         var todayUnix = Time.today().value();
         var tomorrowUnix = startOfDay(todayUnix + (Time.Gregorian.SECONDS_PER_DAY * 1.5).toNumber()); // 1.5, to avoid DST nonsense
-        var inSixDaysUnix = startOfDay(todayUnix + (Time.Gregorian.SECONDS_PER_DAY * 6.5).toNumber()); // 6.5, to avoid DST nonsense
-        var arcRadius = self.screenRadius - Math.round(self.ringWidth * 2.1);
+        var inTwelveDaysUnix = startOfDay(todayUnix + (Time.Gregorian.SECONDS_PER_DAY * 11.5).toNumber()); // 11.5, to avoid DST nonsense
 
-        dc.setPenWidth(5);
+        dc.setPenWidth(weekRingWidth);
         for (var eventIdx = 0; eventIdx < weekTimeEvents.size(); eventIdx++) {
             var event = weekTimeEvents[eventIdx];
-            var startUnix = clamp(event["startTime"], tomorrowUnix, inSixDaysUnix + sleepTime);
-            var endUnix = clamp(event["endTime"], tomorrowUnix, inSixDaysUnix + sleepTime);
+            var startUnix = clamp(event["startTime"], tomorrowUnix, inTwelveDaysUnix + sleepTime);
+            var endUnix = clamp(event["endTime"], tomorrowUnix, inTwelveDaysUnix + sleepTime);
 
-            if (startUnix == endUnix) {
+            if (startUnix >= endUnix) {
                 continue;
             }
 
-            var startAngle = weekUnixTimeToAngle(startUnix, wakeTime, awakeSeconds, now);
-            var endAngle = weekUnixTimeToAngle(endUnix, wakeTime, awakeSeconds, now);
+            var startAngle = weekUnixTimeToAngle(startUnix, wakeTime, awakeSeconds, now, todayUnix);
+            var endAngle = weekUnixTimeToAngle(endUnix, wakeTime, awakeSeconds, now, todayUnix);
+
+            if (startAngle >= endAngle) {
+                continue;
+            }
 
             dc.setColor(event["color"], Graphics.COLOR_TRANSPARENT);
-            dc.drawArc(self.screenRadius, self.screenRadius, arcRadius,
+            dc.drawArc(self.screenRadius, self.screenRadius, radius,
                        Graphics.ARC_CLOCKWISE,
-                       convertClockToArcAngle(startAngle - 90),
-                       convertClockToArcAngle(endAngle - 90));
+                       convertClockToArcAngle(startAngle),
+                       convertClockToArcAngle(endAngle));
+        }
+
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        for (var dayOffset = 0; dayOffset < 11; dayOffset++) {
+            var weekDay = (now.day_of_week + dayOffset) % 7;
+            var angle = (dayOffset * 30 + 4) / 180.0 * Math.PI;
+            drawText(dc, self.screenRadius + Math.round(radius * Math.sin(angle)),
+                         self.screenRadius - Math.round(radius * Math.cos(angle)),
+                         Graphics.FONT_XTINY, weekDayLetters[weekDay]);
         }
 
         var daysTillMonday = 8 - now.day_of_week;
         if (daysTillMonday > 6) {
             daysTillMonday -= 7;
         }
-        var angle = (daysTillMonday * 30 - 90 + 7) / 180.0 * Math.PI;
-        var letterRadius = arcRadius - 5;
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        drawText(dc, self.screenRadius + Math.round(letterRadius * Math.sin(angle)),
-                 self.screenRadius - Math.round(letterRadius * Math.cos(angle)),
-                 Graphics.FONT_XTINY, nextWeekNumber.toString());
-        //var letterRadius = arcRadius - 3;
-        //dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-        //for (var dayOffset = 1; dayOffset < 7; dayOffset++) {
-        //    var weekDay = (now.day_of_week - 1 + dayOffset) % 7;
-        //    var angle = (dayOffset * 30 - 15 - 90) / 180.0 * Math.PI;
-        //    drawText(dc, self.screenRadius + Math.round(letterRadius * Math.sin(angle)),
-        //                 self.screenRadius - Math.round(letterRadius * Math.cos(angle)),
-        //                 Graphics.FONT_XTINY, weekDayLetters[weekDay]);
-        //}
+
+        {
+            var angle = -23 / 180.0 * Math.PI;
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+            drawText(dc, self.screenRadius + Math.round(radius * Math.sin(angle)),
+                        self.screenRadius - Math.round(radius * Math.cos(angle)),
+                        Graphics.FONT_XTINY, weekNumber.toString());
+
+            dc.setPenWidth(1.5);
+            dc.drawArc(self.screenRadius, self.screenRadius, Math.round(radius)-1, Graphics.ARC_CLOCKWISE, 110, 95);
+
+            angle = -5 / 180.0 * Math.PI;
+            var backAngle = -8 / 180.0 * Math.PI;
+            var x = self.screenRadius + Math.round(radius * Math.sin(angle));
+            var y = self.screenRadius - Math.round(radius * Math.cos(angle));
+            dc.drawLine(x, y,
+                        self.screenRadius + Math.round((radius + 3) * Math.sin(backAngle)),
+                        self.screenRadius - Math.round((radius + 3) * Math.cos(backAngle)));
+            dc.drawLine(x, y,
+                        self.screenRadius + Math.round((radius - 3) * Math.sin(backAngle)),
+                        self.screenRadius - Math.round((radius - 3) * Math.cos(backAngle)));
+
+        }
+
+        {
+            var angle = (daysTillMonday * 30) / 180.0 * Math.PI;
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+            drawText(dc, self.screenRadius + Math.round(radius * Math.sin(angle)),
+                        self.screenRadius - Math.round(radius * Math.cos(angle)),
+                        Graphics.FONT_XTINY, weekNumberPlusOne.toString());
+        }
+
+        if (daysTillMonday < 4) {
+            var angle = ((daysTillMonday + 7) * 30) / 180.0 * Math.PI;
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+            drawText(dc, self.screenRadius + Math.round(radius * Math.sin(angle)),
+                        self.screenRadius - Math.round(radius * Math.cos(angle)),
+                        Graphics.FONT_XTINY, weekNumberPlusTwo.toString());
+        }
+    }
+
+    function drawRings(dc as Graphics.Dc) as Void {
+        var tickAngle = 30.0 / 180.0 * Math.PI;
+
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+
+        for (var tickIndex = 0; tickIndex < 12; ++tickIndex) {
+            var angle = tickIndex * tickAngle;
+            var xScaled = Math.sin(angle);
+            var yScaled = Math.cos(angle);
+
+            var radius = self.yearRingRadius - self.ringWidth * 0.5 - 1.5;
+            dc.fillCircle(Math.round(self.screenRadius + xScaled * radius),
+                          Math.round(self.screenRadius - yScaled * radius), 1.5);
+            radius = self.weekRingRadius - self.ringWidth * 0.5 - 1;
+            dc.fillCircle(Math.round(self.screenRadius + xScaled * radius),
+                          Math.round(self.screenRadius - yScaled * radius), 1.5);
+            if (tickIndex % 6 != 0) {
+                radius = self.eventRingRadius - self.ringWidth - 1;
+                dc.fillCircle(Math.round(self.screenRadius + xScaled * radius),
+                              Math.round(self.screenRadius - yScaled * radius), 1.5);
+            }
+        }
+        var radius = self.eventRingRadius - self.ringWidth;
+        dc.setPenWidth(2);
+        dc.drawCircle(self.screenRadius, self.screenRadius - radius, 3);
+        dc.drawCircle(self.screenRadius, self.screenRadius + radius, 3);
     }
 
     function draw(dc as Graphics.Dc, gregorianNow as Time.Gregorian.Info, now as Time.Moment) as Void {
@@ -623,9 +698,10 @@ class CaldavWatchView extends WatchUi.WatchFace {
         dc.setAntiAlias(true);
 
         drawEventRing(dc, self.eventRingRadius, now);
-        drawWeekEvents(dc, gregorianNow);
-        drawYearRing(dc, gregorianNow);
+        drawYearRing(dc, self.yearRingRadius, gregorianNow);
+        drawWeekRing(dc, self.weekRingRadius, gregorianNow);
 
+        drawRings(dc);
 
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         drawNextAlarmEvent(dc);
@@ -633,11 +709,11 @@ class CaldavWatchView extends WatchUi.WatchFace {
         var xOffsetMiddleRow = 16 * self.onePercentWidth;
         drawBattery(dc, self.screenRadius - xOffsetMiddleRow, self.screenRadius);
 
-        var yBottomRow = self.screenRadius + 13 * self.onePercentWidth;
-        var xOffsetBottomRow = 13 * self.onePercentWidth;
+        var yBottomRow = self.screenRadius + 11 * self.onePercentWidth;
+        var xOffsetBottomRow = 14 * self.onePercentWidth;
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        drawBitmap(dc, self.screenRadius - xOffsetBottomRow, yBottomRow, stepsIcon);
-        drawBitmap(dc, self.screenRadius,                    yBottomRow, stairsIcon);
+        drawBitmap(dc, self.screenRadius - xOffsetBottomRow, yBottomRow, stairsIcon);
+        drawBitmap(dc, self.screenRadius,                    yBottomRow, stepsIcon);
         drawBitmap(dc, self.screenRadius + xOffsetBottomRow, yBottomRow, caloriesIcon);
 
         if (System.getDeviceSettings().phoneConnected) {
@@ -668,41 +744,36 @@ class CaldavWatchView extends WatchUi.WatchFace {
                          Graphics.FONT_TINY, timeToString(gregorianNow.min));
         }
 
-        // TODO: Catch exception
         var homeLatitude = Application.Properties.getValue("HomeLatitude") as Lang.Float;
         var homeLongitude = Application.Properties.getValue("HomeLongitude") as Lang.Float;
-        //try {
-            var location = new Position.Location({
-                :latitude => homeLatitude,
-                :longitude => homeLongitude,
-                :format => :degrees
-            });
-            var homeNow = Time.Gregorian.localMoment(location, now);
-            var gregorianHomeNow = Time.Gregorian.info(homeNow, Time.FORMAT_SHORT);
-            if (gregorianNow.min != gregorianHomeNow.min || gregorianNow.hour != gregorianHomeNow.hour) {
-                var minute = gregorianHomeNow.min - gregorianHomeNow.min % 5;
-                var angle = ((gregorianHomeNow.hour % 12) * 30 + minute * 0.5) / 180 * Math.PI;
-                var xHome = self.screenRadius + self.eventRingRadius * Math.sin(angle);
-                var yHome = self.screenRadius - self.eventRingRadius * Math.cos(angle);
-                dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-                drawBitmap(dc, xHome, yHome, self.houseIcon);
-                drawText(dc, xHome, yHome, Graphics.FONT_TINY, timeToString(gregorianHomeNow.min));
-            }
-        //}
-
-        dc.drawBitmap(0, 0, self.rings);
+        var location = new Position.Location({
+            :latitude => homeLatitude,
+            :longitude => homeLongitude,
+            :format => :degrees
+        });
+        var homeNow = Time.Gregorian.localMoment(location, now.value());
+        var gregorianHomeNow = Time.Gregorian.info(homeNow, Time.FORMAT_SHORT);
+        if (gregorianNow.min != gregorianHomeNow.min || gregorianNow.hour != gregorianHomeNow.hour) {
+            var minute = gregorianHomeNow.min - gregorianHomeNow.min % 5;
+            var angle = ((gregorianHomeNow.hour % 12) * 30 + minute * 0.5) / 180 * Math.PI;
+            var xHome = self.screenRadius + self.eventRingRadius * Math.sin(angle);
+            var yHome = self.screenRadius - self.eventRingRadius * Math.cos(angle);
+            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+            drawBitmap(dc, xHome, yHome, self.houseIcon);
+            drawText(dc, xHome, yHome, Graphics.FONT_TINY, timeToString(gregorianHomeNow.min));
+        }
 
         var xOffsetMiddleRow = 16 * self.onePercentWidth;
         drawHeartRate(dc, self.screenRadius + xOffsetMiddleRow, self.screenRadius);
 
-        var yBottomRow = self.screenRadius + 19 * self.onePercentWidth;
-        var xOffsetBottomRow = 13 * self.onePercentWidth;
+        var yBottomRow = self.screenRadius + 17 * self.onePercentWidth;
+        var xOffsetBottomRow = 14 * self.onePercentWidth;
         var activity = ActivityMonitor.getInfo();
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
 
-        var text = activity.steps;
+        var text = activity.floorsClimbed;
         drawText(dc, self.screenRadius - xOffsetBottomRow, yBottomRow, Graphics.FONT_XTINY, text == null ? "--" : text);
-        text = activity.floorsClimbed;
+        text = activity.steps;
         drawText(dc, self.screenRadius                   , yBottomRow, Graphics.FONT_XTINY, text == null ? "--" : text);
         text = activity.activeMinutesWeek.total;
         drawText(dc, self.screenRadius + xOffsetBottomRow, yBottomRow, Graphics.FONT_XTINY, text == null ? "--" : text);
@@ -720,7 +791,6 @@ class CaldavWatchView extends WatchUi.WatchFace {
     }
 
     function onBackgroundData(data) {
-        System.println(data);
         var type = data["type"];
         if (type.equals("yearEvents") || type.equals("weekEvents") || type.equals("dayEvents")) {
             var events = data["events"];
@@ -751,7 +821,6 @@ class CaldavWatchView extends WatchUi.WatchFace {
     // memory.
     function onHide() as Void {
         self.yearWheel = null;
-        self.rings = null;
         self.alphaWheel = null;
         self.heartIcon = null;
         self.stepsIcon = null;

@@ -1,1 +1,8 @@
 bin
+gen/006-B3224-00/source
+gen/resources/cache
+internal-mir
+mir/source
+CaldavWatch.prg
+CaldavWatch.prg.debug.xml
+CaldavWatch-settings.json

@@ -20,17 +20,9 @@ class CaldavWatchApp extends Application.AppBase {
         }
     }
 
-    function dayNumber() {
-        return Time.Gregorian.info(Time.now(), Time.FORMAT_SHORT).day;
-    }
+    function onStart(state as Lang.Dictionary?) as Void {}
 
-    // onStart() is called on application start up
-    function onStart(state as Lang.Dictionary?) as Void {
-    }
-
-    // onStop() is called when your application is exiting
-    function onStop(state as Lang.Dictionary?) as Void {
-    }
+    function onStop(state as Lang.Dictionary?) as Void {}
 
     // Return the initial view of your application here
     function getInitialView() as Lang.Array<WatchUi.Views or WatchUi.InputDelegates>? {
@@ -50,10 +42,8 @@ class CaldavWatchApp extends Application.AppBase {
     function onBackgroundData(data as Application.PersistableType) as Void {
         Background.registerForTemporalEvent(new Time.Duration(15 * 60));
 
-        if (view == null) {
-            return;
+        if (view != null) {
+            view.onBackgroundData(data);
         }
-
-        view.onBackgroundData(data);
     }
 }

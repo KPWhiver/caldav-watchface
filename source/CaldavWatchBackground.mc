@@ -48,7 +48,7 @@ class CaldavWatchBackground extends System.ServiceDelegate {
                 :method=>Communications.HTTP_REQUEST_METHOD_GET
             }, method(:onDayData));
         } else if (weekCalendars != null && retrieveWeekEvents) {
-            var endTime = startTime.add(new Time.Duration(Time.Gregorian.SECONDS_PER_DAY * 7));
+            var endTime = startTime.add(new Time.Duration(Time.Gregorian.SECONDS_PER_DAY * 12));
             Communications.makeWebRequest(retrievalServiceUrl, {
                 "calendarUrl"=>caldavUrl,
                 "calendarList"=>weekCalendars,
