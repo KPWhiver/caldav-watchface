@@ -746,14 +746,16 @@ class CaldavWatchView extends WatchUi.WatchFace {
         dc.drawBitmap(0, 0, self.offScreenBuffer);
 
         // draw minute
-        {
-            var minute = gregorianNow.min - gregorianNow.min % 5;
-            var angle = ((gregorianNow.hour % 12) * 30 + minute * 0.5) / 180 * Math.PI;
-            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-            drawText(dc, self.screenRadius + self.eventRingRadius * Math.sin(angle),
-                         self.screenRadius - self.eventRingRadius * Math.cos(angle),
-                         Graphics.FONT_TINY, timeToString(gregorianNow.min));
-        }
+        var nowMinute = gregorianNow.min - gregorianNow.min % 5;
+        var nowDegrees = ((gregorianNow.hour % 12) * 30 + nowMinute * 0.5);
+        var nowRadians = nowDegrees / 180 * Math.PI;
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+        drawText(
+            dc,
+            self.screenRadius + self.eventRingRadius * Math.sin(nowRadians),
+            self.screenRadius - self.eventRingRadius * Math.cos(nowRadians),
+            Graphics.FONT_TINY, timeToString(gregorianNow.min)
+        );
 
         var homeLatitude = Application.Properties.getValue("HomeLatitude") as Lang.Float;
         var homeLongitude = Application.Properties.getValue("HomeLongitude") as Lang.Float;
@@ -762,13 +764,47 @@ class CaldavWatchView extends WatchUi.WatchFace {
             :longitude => homeLongitude,
             :format => :degrees
         });
-        var homeNow = Time.Gregorian.localMoment(location, now.value());
-        var gregorianHomeNow = Time.Gregorian.info(homeNow, Time.FORMAT_SHORT);
+        var gregorianHomeNow = Time.Gregorian.info(
+            Time.Gregorian.localMoment(location, now.value()),
+            Time.FORMAT_SHORT
+        );
         if (gregorianNow.min != gregorianHomeNow.min || gregorianNow.hour != gregorianHomeNow.hour) {
-            var minute = gregorianHomeNow.min - gregorianHomeNow.min % 5;
-            var angle = ((gregorianHomeNow.hour % 12) * 30 + minute * 0.5) / 180 * Math.PI;
-            var xHome = self.screenRadius + self.eventRingRadius * Math.sin(angle);
-            var yHome = self.screenRadius - self.eventRingRadius * Math.cos(angle);
+            var homeMinute = gregorianHomeNow.min - gregorianHomeNow.min % 5;
+            var homeDegrees = ((gregorianHomeNow.hour % 12) * 30 + homeMinute * 0.5);
+            var homeRadians = homeDegrees / 180 * Math.PI;
+            var xHome = self.screenRadius + self.eventRingRadius * Math.sin(homeRadians);
+            var yHome = self.screenRadius - self.eventRingRadius * Math.cos(homeRadians);
+
+            var homeNow = Time.Gregorian.moment({
+                :year => gregorianHomeNow.year,
+                :month => gregorianHomeNow.month,
+                :day => gregorianHomeNow.day,
+                :hour => gregorianHomeNow.hour,
+                :minute => gregorianHomeNow.min,
+                :second => gregorianHomeNow.sec
+            });
+            var startAngle;
+            var endAngle;
+            if ((homeNow.value() - now.value()).abs() > 3600) {
+                if (homeNow.greaterThan(now)) {
+                    startAngle = nowDegrees + 15;
+                    endAngle = homeDegrees - 15;
+                } else {
+                    startAngle = homeDegrees + 15;
+                    endAngle = nowDegrees - 15;
+                }
+            }
+            if (endAngle < startAngle) {
+                endAngle += 360;
+            }
+            dc.setPenWidth(2);
+            dc.drawArc(
+                self.screenRadius, self.screenRadius, self.eventRingRadius,
+                Graphics.ARC_CLOCKWISE,
+                convertClockToArcAngle(startAngle),
+                convertClockToArcAngle(endAngle)
+            );
+
             dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
             drawBitmap(dc, xHome, yHome, self.houseIcon);
             drawText(dc, xHome, yHome, Graphics.FONT_TINY, timeToString(gregorianHomeNow.min));
