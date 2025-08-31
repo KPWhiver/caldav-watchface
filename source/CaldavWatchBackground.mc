@@ -13,6 +13,11 @@ class CaldavWatchBackground extends System.ServiceDelegate {
     }
 
     function onTemporalEvent() as Void {
+        var deviceSettings = System.getDeviceSettings();
+        if (deviceSettings has :doNotDisturb && deviceSettings.doNotDisturb) {
+            return;
+        }
+
         var startTime = Time.now();
 
         var dayEvents = Application.Storage.getValue("dayEvents");
