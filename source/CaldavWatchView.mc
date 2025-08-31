@@ -410,7 +410,7 @@ class CaldavWatchView extends WatchUi.WatchFace {
     function dateToAngle(date as Time.Gregorian.Info) as Lang.Float {
         var zeroBasedMonth = (date.month as Lang.Number) - 1;
         var zeroBasedDate = zeroBasedMonth + (date.day - 1.0f) / self.daysPerMonth[zeroBasedMonth];
-        return (zeroBasedDate/12) * (2*Math.PI);
+        return -(zeroBasedDate/12) + 1;
     }
 
     function dateToMoment(date as Lang.Dictionary) as Time.Moment {
@@ -444,7 +444,7 @@ class CaldavWatchView extends WatchUi.WatchFace {
         }
 
         if (allDayColors.size() == 0) {
-            allDayColors.add(Graphics.COLOR_DK_GRAY);
+            allDayColors.add(Graphics.COLOR_BLACK);
         }
 
         // Draw year ring
@@ -454,9 +454,9 @@ class CaldavWatchView extends WatchUi.WatchFace {
         dc.drawCircle(self.screenRadius, self.screenRadius, self.screenRadius - yearRingWidth * 1.5);
 
         // draw month day
-        var todayAngle = dateToAngle(now);
+        var todayAngle = dateToAngle(now) * 2 * Math.PI;
 
-        var xValue = self.screenRadius - radius * Math.sin(todayAngle);
+        var xValue = self.screenRadius + radius * Math.sin(todayAngle);
         var yValue = self.screenRadius - radius * Math.cos(todayAngle);
 
         var arcRadius = Math.round(yearRingWidth * 0.4);
@@ -473,17 +473,28 @@ class CaldavWatchView extends WatchUi.WatchFace {
         var yearDateEvents = self.yearEvents.get("dateEvents") as Lang.Array;
         for (var eventIdx = 0; eventIdx < yearDateEvents.size(); eventIdx++) {
             var event = yearDateEvents[eventIdx];
-            var startDate = event["startDate"];
-            var eventAngle = dateToAngle(Time.Gregorian.info(dateToMoment(startDate), Time.FORMAT_SHORT));
+            var startMoment = dateToMoment(event["startDate"]);
+            var endMoment = dateToMoment(event["endDate"]);
+            var startAngle = dateToAngle(Time.Gregorian.info(startMoment, Time.FORMAT_SHORT));
 
-            dc.setPenWidth(2);
-            dc.setColor(event["color"], Graphics.COLOR_TRANSPARENT);
-            drawRadialLine(dc, self.screenRadius - yearRingWidth, self.screenRadius, -eventAngle);
+            if (startMoment.compare(endMoment) == 0) {
+                dc.setPenWidth(2);
+                dc.setColor(event["color"], Graphics.COLOR_TRANSPARENT);
+                drawRadialLine(dc, self.screenRadius - yearRingWidth, self.screenRadius, startAngle * 2 * Math.PI);
+            } else {
+                var endAngle = dateToAngle(Time.Gregorian.info(endMoment.add(new Time.Duration(3600*24)), Time.FORMAT_SHORT));
+
+                dc.setPenWidth(yearRingWidth + 1);
+                dc.setColor(event["color"], Graphics.COLOR_TRANSPARENT);
+                dc.drawArc(self.screenRadius, self.screenRadius, self.screenRadius - yearRingWidth / 2.0,
+                           Graphics.ARC_COUNTER_CLOCKWISE,
+                           Math.round(convertClockToArcAngle(startAngle * 360)),
+                           Math.round(convertClockToArcAngle(endAngle * 360)));
+            }
         }
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
         drawText(dc, xValue, yValue, Graphics.FONT_XTINY, timeToString(now.day));
-
     }
 
     function startOfDay(unix as Lang.Number) as Lang.Number {
