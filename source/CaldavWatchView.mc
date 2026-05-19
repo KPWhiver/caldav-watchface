@@ -793,18 +793,17 @@ class CaldavWatchView extends WatchUi.WatchFace {
                     startAngle = homeDegrees + 15;
                     endAngle = nowDegrees - 15;
                 }
+                if (endAngle < startAngle) {
+                    endAngle += 360;
+                }
+                dc.setPenWidth(2);
+                dc.drawArc(
+                    self.screenRadius, self.screenRadius, self.eventRingRadius,
+                    Graphics.ARC_CLOCKWISE,
+                    convertClockToArcAngle(startAngle),
+                    convertClockToArcAngle(endAngle)
+                );
             }
-            if (endAngle < startAngle) {
-                endAngle += 360;
-            }
-            dc.setPenWidth(2);
-            dc.drawArc(
-                self.screenRadius, self.screenRadius, self.eventRingRadius,
-                Graphics.ARC_CLOCKWISE,
-                convertClockToArcAngle(startAngle),
-                convertClockToArcAngle(endAngle)
-            );
-
             dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
             drawBitmap(dc, xHome, yHome, self.houseIcon);
             drawText(dc, xHome, yHome, Graphics.FONT_TINY, timeToString(gregorianHomeNow.min));

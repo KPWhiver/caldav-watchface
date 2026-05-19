@@ -25,12 +25,12 @@ class CaldavWatchApp extends Application.AppBase {
     function onStop(state as Lang.Dictionary?) as Void {}
 
     // Return the initial view of your application here
-    function getInitialView() as Lang.Array<WatchUi.Views or WatchUi.InputDelegates>? {
+    function getInitialView() as [ WatchUi.Views ] or [ WatchUi.Views, WatchUi.InputDelegates] {
         self.view = new CaldavWatchView();
-        return [ self.view ] as Lang.Array<WatchUi.Views or WatchUi.InputDelegates>;
+        return [ self.view ];
     }
 
-    function getServiceDelegate() as Lang.Array<System.ServiceDelegate> {
+    function getServiceDelegate() as [ System.ServiceDelegate ] {
         return [ new CaldavWatchBackground() ];
     }
 
