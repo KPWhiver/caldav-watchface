@@ -643,7 +643,7 @@ class CaldavWatchView extends WatchUi.WatchFace {
                         Graphics.FONT_XTINY, weekNumber.toString());
 
             dc.setPenWidth(1.5);
-            dc.drawArc(self.screenRadius, self.screenRadius, Math.round(radius)-1, Graphics.ARC_CLOCKWISE, 110, 95);
+            dc.drawArc(self.screenRadius, self.screenRadius, Math.round(radius)-1, Graphics.ARC_CLOCKWISE, 108, 95);
 
             angle = -5 / 180.0 * Math.PI;
             var backAngle = -8 / 180.0 * Math.PI;
