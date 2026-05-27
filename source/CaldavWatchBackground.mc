@@ -82,7 +82,7 @@ class CaldavWatchBackground extends System.ServiceDelegate {
         if (responseCode == 200) {
             Background.exit({"type"=>"dayEvents", "events"=>data});
         } else {
-            Background.exit({"type"=>"error", "responseCode"=>responseCode});
+            Background.exit({"type"=>"dayEvents", "responseCode"=>responseCode});
         }
     }
 
@@ -90,7 +90,7 @@ class CaldavWatchBackground extends System.ServiceDelegate {
         if (responseCode == 200) {
             Background.exit({"type"=>"weekEvents", "events"=>data});
         } else {
-            Background.exit({"type"=>"error", "responseCode"=>responseCode});
+            Background.exit({"type"=>"weekEvents", "responseCode"=>responseCode});
         }
     }
 
@@ -98,7 +98,7 @@ class CaldavWatchBackground extends System.ServiceDelegate {
         if (responseCode == 200) {
             Background.exit({"type"=>"yearEvents", "events"=>data});
         } else {
-            Background.exit({"type"=>"error", "responseCode"=>responseCode});
+            Background.exit({"type"=>"yearEvents", "responseCode"=>responseCode});
         }
     }
 }

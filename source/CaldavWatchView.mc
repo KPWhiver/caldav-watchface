@@ -837,28 +837,39 @@ class CaldavWatchView extends WatchUi.WatchFace {
     }
 
     function onBackgroundData(data) {
-        var type = data["type"];
-        if (type.equals("yearEvents") || type.equals("weekEvents") || type.equals("dayEvents")) {
-            var events = data["events"];
+        if (data["responseCode"] != null) {
+            System.println(data["responseCode"] + ": " + data);
+        }
+
+        var events = data["events"];
+        if (events != null) {
             convertColors(events["timeEvents"]);
             convertColors(events["dateEvents"]);
+        }
 
-            var now = Time.now().value();
-            if (type.equals("dayEvents")) {
+        var now = Time.now().value();
+
+        var type = data["type"];
+        if (type.equals("dayEvents")) {
+            Application.Storage.setValue("dayEventsRetrieved", now);
+            if (events != null) {
                 self.dayEvents = events;
                 Application.Storage.setValue("dayEvents", events);
-                Application.Storage.setValue("dayEventsRetrieved", now);
-            } else if (type.equals("weekEvents")) {
+            }
+        } else if (type.equals("weekEvents")) {
+            Application.Storage.setValue("weekEventsRetrieved", now);
+            if (events != null) {
                 self.weekEvents = events;
                 Application.Storage.setValue("weekEvents", events);
-                Application.Storage.setValue("weekEventsRetrieved", now);
-            } else {
+            }
+        } else if (type.equals("yearEvents")) {
+            Application.Storage.setValue("yearEventsRetrieved", now);
+            if (events != null) {
                 self.yearEvents = events;
                 Application.Storage.setValue("yearEvents", events);
-                Application.Storage.setValue("yearEventsRetrieved", now);
             }
         } else {
-            System.println(data["responseCode"] + ": " + data);
+            System.println("Unknown type: " + type);
         }
     }
 
