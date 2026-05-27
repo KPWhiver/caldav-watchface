@@ -58,7 +58,8 @@ class CaldavWatchBackground extends System.ServiceDelegate {
                 "calendarUrl"=>caldavUrl,
                 "calendarList"=>weekCalendars,
                 "startTime"=>startTime.value().toLong().toString(),
-                "endTime"=>endTime.value().toLong().toString()
+                "endTime"=>endTime.value().toLong().toString(),
+                "brief"=>true
             }, {
                 :method=>Communications.HTTP_REQUEST_METHOD_GET
             }, method(:onWeekData));
@@ -69,6 +70,7 @@ class CaldavWatchBackground extends System.ServiceDelegate {
                 "calendarList"=>yearCalendars,
                 "startTime"=>startTime.value().toLong().toString(),
                 "endTime"=>endTime.value().toLong().toString(),
+                "brief"=>true,
                 "allDayOnly"=>true
             }, {
                 :method=>Communications.HTTP_REQUEST_METHOD_GET
