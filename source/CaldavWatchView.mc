@@ -764,8 +764,9 @@ class CaldavWatchView extends WatchUi.WatchFace {
             :longitude => homeLongitude,
             :format => :degrees
         });
+        var homeLocalMoment = Time.Gregorian.localMoment(location, now.value());
         var gregorianHomeNow = Time.Gregorian.info(
-            Time.Gregorian.localMoment(location, now.value()),
+            homeLocalMoment,
             Time.FORMAT_SHORT
         );
         if (gregorianNow.min != gregorianHomeNow.min || gregorianNow.hour != gregorianHomeNow.hour) {
@@ -775,18 +776,12 @@ class CaldavWatchView extends WatchUi.WatchFace {
             var xHome = self.screenRadius + self.eventRingRadius * Math.sin(homeRadians);
             var yHome = self.screenRadius - self.eventRingRadius * Math.cos(homeRadians);
 
-            var homeNow = Time.Gregorian.moment({
-                :year => gregorianHomeNow.year,
-                :month => gregorianHomeNow.month,
-                :day => gregorianHomeNow.day,
-                :hour => gregorianHomeNow.hour,
-                :minute => gregorianHomeNow.min,
-                :second => gregorianHomeNow.sec
-            });
             var startAngle;
             var endAngle;
-            if ((homeNow.value() - now.value()).abs() > 3600) {
-                if (homeNow.greaterThan(now)) {
+            var timeZoneOffset = System.getClockTime().timeZoneOffset;
+            var homeTimeZoneOffset = homeLocalMoment.getTimeZoneOffset();
+            if ((homeTimeZoneOffset - timeZoneOffset).abs() > 3600) {
+                if (homeTimeZoneOffset > timeZoneOffset) {
                     startAngle = nowDegrees + 15;
                     endAngle = homeDegrees - 15;
                 } else {
